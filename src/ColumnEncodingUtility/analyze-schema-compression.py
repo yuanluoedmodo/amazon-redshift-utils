@@ -87,6 +87,7 @@ drop_old_data = False
 comprows = None
 query_group = None
 ssl_option = False
+timeout = '1200000'
 
 
 def execute_query(str):
@@ -645,6 +646,7 @@ def usage(with_message):
     write('           --comprows       - Set the number of rows to use for Compression Encoding Analysis')
     write('           --query_group    - Set the query_group for all queries')
     write('           --ssl-option     - Set SSL to True or False (default False)')
+    write('           --timeout        - Set Redshift connection timeout (default 1200000 ms)')
     sys.exit(INVALID_ARGS)
 
 
