@@ -1007,7 +1007,7 @@ def main(argv):
     #db_pwd = getpass.getpass("Password <%s>: " % db_user)
     
     # setup the configuration
-    configure(timeout, output_file, db, db_user, db_pwd, db_host, db_port, analyze_schema, target_schema, analyze_table, threads, do_execute, query_slot_count, ignore_errors, force, drop_old_data, comprows, query_group, debug, ssl_option)
+    configure(output_file, db, db_user, db_pwd, db_host, db_port, analyze_schema, target_schema, analyze_table, threads, do_execute, query_slot_count, ignore_errors, force, drop_old_data, comprows, query_group, debug, ssl_option, timeout)
     
     # run the analyser
     result_code = run()
