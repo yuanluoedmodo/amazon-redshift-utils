@@ -210,7 +210,7 @@ def get_pg_conn():
             cursor.execute(set_slot_count)
 
         # set a long statement timeout
-        set_timeout = "set statement_timeout = '1200000'"
+        set_timeout = "set statement_timeout = " +timeout
         if debug:
             comment(set_timeout)
             
@@ -649,7 +649,7 @@ def usage(with_message):
 
 
 # method used to configure global variables, so that we can call the run method
-def configure(_output_file, _db, _db_user, _db_pwd, _db_host, _db_port, _analyze_schema, _target_schema, _analyze_table, _threads, _do_execute, _query_slot_count, _ignore_errors, _force, _drop_old_data, _comprows, _query_group, _debug, _ssl_option):
+def configure(_output_file, _db, _db_user, _db_pwd, _db_host, _db_port, _analyze_schema, _target_schema, _analyze_table, _threads, _do_execute, _query_slot_count, _ignore_errors, _force, _drop_old_data, _comprows, _query_group, _debug, _ssl_option, _timeout):
     # setup globals
     global db
     global db_user
@@ -670,6 +670,7 @@ def configure(_output_file, _db, _db_user, _db_pwd, _db_host, _db_port, _analyze
     global query_group
     global output_file
     global ssl_option
+    global timeout
 
     # set global variable values
     output_file = _output_file    
@@ -691,6 +692,7 @@ def configure(_output_file, _db, _db_user, _db_pwd, _db_host, _db_port, _analyze
     comprows = None if _comprows == -1 else int(_comprows)
     query_slot_count = int(_query_slot_count)
     ssl_option = False if _ssl_option == None else _ssl_option
+    timeout = _timeout
     
     if (debug == True):
         comment("Redshift Column Encoding Utility Configuration")
@@ -712,6 +714,7 @@ def configure(_output_file, _db, _db_user, _db_pwd, _db_host, _db_port, _analyze
         comment("comprows: %s " % (comprows))
         comment("query_group: %s " % (query_group))
         comment("ssl_option: %s " % (ssl_option))
+        comment("timeout: %s " % (timeout))
     
     
 def run():
@@ -880,8 +883,9 @@ def main(argv):
     comprows = None
     query_group = None
     ssl_option = None
+    timeout = '1200000'
     
-    supported_args = """db= db-user= db-host= db-port= target-schema= analyze-schema= analyze-table= threads= debug= output-file= do-execute= slot-count= ignore-errors= force= drop-old-data= comprows= query_group= ssl-option="""
+    supported_args = """db= db-user= db-host= db-port= target-schema= analyze-schema= analyze-table= threads= debug= output-file= do-execute= slot-count= ignore-errors= force= drop-old-data= comprows= query_group= ssl-option= timeout="""
     
     # extract the command line arguments
     try:
@@ -927,6 +931,11 @@ def main(argv):
                 debug = True
             else:
                 debug = False
+        elif arg == "--timeout":
+            if value == '' or value == None:
+                timeout = '1200000'
+            else:
+                timeout = value
         elif arg == "--output-file":
             if value == '' or value == None:
                 usage()
@@ -992,7 +1001,7 @@ def main(argv):
     db_pwd = getpass.getpass("Password <%s>: " % db_user)
     
     # setup the configuration
-    configure(output_file, db, db_user, db_pwd, db_host, db_port, analyze_schema, target_schema, analyze_table, threads, do_execute, query_slot_count, ignore_errors, force, drop_old_data, comprows, query_group, debug, ssl_option)
+    configure(timeout, output_file, db, db_user, db_pwd, db_host, db_port, analyze_schema, target_schema, analyze_table, threads, do_execute, query_slot_count, ignore_errors, force, drop_old_data, comprows, query_group, debug, ssl_option)
     
     # run the analyser
     result_code = run()
