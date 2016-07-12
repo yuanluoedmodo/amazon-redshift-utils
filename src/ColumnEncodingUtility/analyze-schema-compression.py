@@ -88,6 +88,7 @@ comprows = None
 query_group = None
 ssl_option = False
 timeout = '1200000'
+db_pwd = None
 
 
 def execute_query(str):
@@ -632,6 +633,7 @@ def usage(with_message):
     write('           --db-user        - The Database User to connect to')
     write('           --db-host        - The Cluster endpoint')
     write('           --db-port        - The Cluster endpoint port (default 5439)')
+    write('           --db-pwd         - Set Redshift password')
     write('           --analyze-schema - The Schema to be Analyzed (default public)')
     write('           --analyze-table  - A specific table to be Analyzed, if --analyze-schema is not desired')
     write('           --target-schema  - Name of a Schema into which the newly optimised tables and data should be created, rather than in place')
@@ -887,7 +889,7 @@ def main(argv):
     ssl_option = None
     timeout = '1200000'
     
-    supported_args = """db= db-user= db-host= db-port= target-schema= analyze-schema= analyze-table= threads= debug= output-file= do-execute= slot-count= ignore-errors= force= drop-old-data= comprows= query_group= ssl-option= timeout="""
+    supported_args = """db= db-user= db-host= db-port= target-schema= analyze-schema= analyze-table= threads= debug= output-file= do-execute= slot-count= ignore-errors= force= drop-old-data= comprows= query_group= ssl-option= timeout= db-pwd="""
     
     # extract the command line arguments
     try:
@@ -938,6 +940,8 @@ def main(argv):
                 timeout = '1200000'
             else:
                 timeout = value
+        elif arg == "--db-pwd":
+            db_pwd = value
         elif arg == "--output-file":
             if value == '' or value == None:
                 usage()
@@ -1000,7 +1004,7 @@ def main(argv):
         threads = 1
         
     # get the database password
-    db_pwd = getpass.getpass("Password <%s>: " % db_user)
+    #db_pwd = getpass.getpass("Password <%s>: " % db_user)
     
     # setup the configuration
     configure(timeout, output_file, db, db_user, db_pwd, db_host, db_port, analyze_schema, target_schema, analyze_table, threads, do_execute, query_slot_count, ignore_errors, force, drop_old_data, comprows, query_group, debug, ssl_option)
